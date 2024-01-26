@@ -1,0 +1,55 @@
+Task1:
+
+Explain the InfoVis Reference Model in great detail.
+
+Raw Data -> Data Tables -> Visual Structure -> View
+
+The InfoVis Reference Model has 4 important stages. We start with Raw Data and through Data Transformations, we can map these out into Data Tables. In these data tables you can see the relations through different variables. The reason behind this is to get a more structured form of the data and from here it's easier to map to a visual form. These Data tables also includes metadata.
+
+Now when we have the relations between the information we can start mapping out the information with Visual Mappings until we get the Visual Structures that we want. A visual structure can look in different ways. A visual structure can have different axes. Unstructured, Nominal, Ordinal and Quantitative axes.
+
+Unstructured Axes means no axis at all.
+
+Nominal Axes means that the regions of the visual structures can be divided into subregions.
+
+Ordinal Axes dives deeper and gives the order of the subregions meaning.
+
+Quantitative Axes means that the different regions has a metric. It can be measured.
+
+
+Here are some techniques to extend the variety of information within the spatial substrate.
+
+Composition: (f.ex. scatterplots)
+Orthogonal placement of axes
+
+Alignment:
+Repetition of an axis at a different position in space
+
+Folding:
+Continuation of an axis in an orthogonal dimension
+
+Recursion:
+Repeated subdivision of space
+
+Overloading:
+Reuse of the same space for the same data table
+
+
+So after we have this visual structure we want to add a last touch. Interaction. This does so that the user can zoom, move around, and so on. This will solve the following problems with a static display:
+
+
+Scalability
+
+Static representations can only show few data aspects
+
+Where is the interesting part of the visual structure?
+
+How can I find this interesting part?
+
+
+We do this by making view transformations. 
+
+
+Task 2:
+
+SKETCH
