@@ -79,7 +79,7 @@ def drawGraph(maxT):
 
    for i in range(13): # 9 is the window size step for 1, f.e. from 1->2 is 0->9 in window
       canvas.create_line((xStart+i*75,yMid+10,xStart+i*75,yMid-10), fill='black')
-      tick = canvas.create_line((xMid+10,yStart+i*75,xMid-10,yStart+i*75), fill='black')
+      canvas.create_line((xMid+10,yStart+i*75,xMid-10,yStart+i*75), fill='black')
 
       if(i!=6):
         canvas.create_text((xStart+i*75,yMid+20), fill='black', text=round(-maxT[0]+i*((abs(maxT[0])*2)/12), 1), width='30')
@@ -129,8 +129,8 @@ def scatterplot(data):
         drawCross(point.x,point.y, maxT)
 
 
-print(maxT[0])
-print(maxT[1])
+""" print(maxT[0])
+print(maxT[1]) """
 
 
 drawGraph(maxT)
