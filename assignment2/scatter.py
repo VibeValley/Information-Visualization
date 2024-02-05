@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-
+import math
 # from pynput import mouse
 
-print("hej")
 
 
 class Point:
@@ -142,6 +141,7 @@ def drawDot(x, y, maxT):
 
     oval = canvas.create_oval((x - size, y - size, x + size, y + size), fill="black")
     canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+    canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
 
 
 def drawRect(x, y, maxT):
@@ -150,6 +150,7 @@ def drawRect(x, y, maxT):
         (x - size, y - size, x + size, y + size), fill="green"
     )
     canvas.tag_bind(rect, "<Button-1>", on_left_button_clicked)
+    canvas.tag_bind(rect, "<Button-3>", on_right_button_clicked)
 
 
 def drawCross(x, y, maxT):
@@ -159,84 +160,205 @@ def drawCross(x, y, maxT):
     line = canvas.create_line((x - size, y + size - 1, x + size, y - size), fill="red")
     canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
     canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+    canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+    canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+
+
+def changeToRelativeCoordinate(pointX, pointY):
+        timesValueX = (450) / maxT[0]
+        timesValueY = (450) / maxT[1]
+        window_x = pointX * timesValueX + 500
+        window_y = -pointY * timesValueY + 500
+        return (window_x, window_y)
 
 
 maxT = calculateMax(data)
+def setZero():
+    return (0,0)
+
+clickedPoint = (0,0)
+
 
 
 def scatterplot(data):
-    timesValueX = (450) / maxT[0]
-    timesValueY = (450) / maxT[1]
     for point in data:
-        if point.id == "a" or point.id == "foo":
-
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
+        (window_x, window_y) = changeToRelativeCoordinate(point.x,point.y)
+        if point.id == "a" or point.id == "foo":     
             drawDot(window_x, window_y, maxT)
         elif point.id == "b" or point.id == "baz":
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
             drawRect(window_x, window_y, maxT)
         else:
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
             drawCross(window_x, window_y, maxT)
 
 
-class Center:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def changeCenter(self, newX, newY):
-        self.x = newX
-        self.y = newY
-
-
-def scatterplot2(data, newCenterX, newCenterY):
+def scatterplot2(data, newCenterX, newCenterY, closestItemPoint):
     timesValueX = (450) / maxT[0]
     timesValueY = (450) / maxT[1]
 
+    #print(closestItemPoint)
+    (window_x1, window_y1) = changeToRelativeCoordinate(closestItemPoint[0],closestItemPoint[1])
+    #print(window_x1, "   ",window_y1)
+    print("Center point: ", newCenterX, newCenterY)
+    itemIndex = 0
     for point in data:
-        if point.id == "a" or point.id == "foo":
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
-            theDiff_x = center.x - newCenterX
-            theDiff_y = center.y - newCenterY
+            (window_x, window_y) = changeToRelativeCoordinate(point.x,point.y)
+            (newCenterX, newCenterY) = changeToRelativeCoordinate(closestItemPoint[0],closestItemPoint[1])
+            theDiff_x = 500 - newCenterX
+            theDiff_y = 500 - newCenterY
 
             newWindow_x = window_x + theDiff_x
             newWindow_y = window_y + theDiff_y
-            drawDot(newWindow_x, newWindow_y, maxT)
+            
 
+            if(closestItemPoint[0] == point.x and closestItemPoint[1] == point.y):
+                oval = canvas.create_oval((newWindow_x - 5,newWindow_y - 5, newWindow_x + 5, newWindow_y + 5), fill="black")
+                oval = canvas.create_oval((newWindow_x - 7, newWindow_y - 7, newWindow_x + 7, newWindow_y + 7))
+                canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+            elif(window_y < newCenterY and window_x < newCenterX):
+                line2 = canvas.create_line((newWindow_x - 5, newWindow_y - 5 + 1, newWindow_x + 5, newWindow_y + 5), fill="red")
+                line = canvas.create_line((newWindow_x - 5, newWindow_y + 5 - 1, newWindow_x + 5, newWindow_y - 5), fill="red")
+                canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+            elif (window_y < newCenterY and window_x > newCenterX):
+                line2 = canvas.create_line((newWindow_x - 5, newWindow_y - 5 + 1, newWindow_x + 5, newWindow_y + 5), fill="blue")
+                line = canvas.create_line((newWindow_x - 5, newWindow_y + 5 - 1, newWindow_x + 5, newWindow_y - 5), fill="blue")
+                canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+            elif(window_y > newCenterY and window_x > newCenterX):
+                oval = canvas.create_oval((newWindow_x - 5, newWindow_y - 5, newWindow_x + 5, newWindow_y + 5), fill="black")
+                canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+            elif(window_y > newCenterY and window_x < newCenterX):
+                rect = canvas.create_rectangle((newWindow_x - 4, newWindow_y - 4, newWindow_x + 4,newWindow_y + 4), fill="green")
+                canvas.tag_bind(rect, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(rect, "<Button-3>", on_right_button_clicked)
+            else:
+                oval = canvas.create_oval((newWindow_x - 5,newWindow_y - 5, newWindow_x + 5, newWindow_y + 5), fill="black")
+                oval2 = canvas.create_oval((newWindow_x - 7, newWindow_y - 7, newWindow_x + 7, newWindow_y + 7))
+                canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(oval2, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(oval2, "<Button-3>", on_right_button_clicked)
+            
+            #print("new ",newWindow_x)
+            #print("old ",window_x)
             point.x = (newWindow_x - 500) / timesValueX
             point.y = -((newWindow_y - 500) / timesValueY)
-        elif point.id == "b" or point.id == "baz":
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
-            theDiff_x = center.x - newCenterX
-            theDiff_y = center.y - newCenterY
+            itemIndex = itemIndex + 1
 
-            newWindow_x = window_x + theDiff_x
-            newWindow_y = window_y + theDiff_y
-            drawRect(newWindow_x, newWindow_y, maxT)
-            point.x = (newWindow_x - 500) / timesValueX
-            point.y = -((newWindow_y - 500) / timesValueY)
-        else:
-            window_x = point.x * timesValueX + 500
-            window_y = -point.y * timesValueY + 500
-            theDiff_x = center.x - newCenterX
-            theDiff_y = center.y - newCenterY
 
-            newWindow_x = window_x + theDiff_x
-            newWindow_y = window_y + theDiff_y
-            drawCross(newWindow_x, newWindow_y, maxT)
-            point.x = (newWindow_x - 500) / timesValueX
-            point.y = -((newWindow_y - 500) / timesValueY)
-    print("current", center.x, center.y)
+def scatterplot3(data, fiveClosestPoints, CenterPoint):
+    for point in data:
+        #Kollar ifall 
+        found = FALSE
+        (window_x, window_y) = changeToRelativeCoordinate(point.x,point.y)
+        for close in fiveClosestPoints:
+            if(close[0] == point.x and close[1] == point.y):
+                found = TRUE
+                if(window_x < 500 and window_y < 500):
+                    line2 = canvas.create_line((window_x - 5, window_y - 5 + 1, window_x + 5, window_y + 5), fill="red")
+                    line = canvas.create_line((window_x - 5, window_y + 5 - 1, window_x + 5, window_y - 5), fill="red")
+                    canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+                    canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+                    canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                    canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+                elif(window_x > 500 and window_y < 500):
+                    line2 = canvas.create_line((window_x - 5, window_y - 5 + 1, window_x + 5, window_y + 5), fill="blue")
+                    line = canvas.create_line((window_x - 5, window_y + 5 - 1, window_x + 5, window_y - 5), fill="blue")
+                    canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                    canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+                    canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+                    canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+                elif(window_x > 500 and window_y > 500):
+                    oval = canvas.create_oval((window_x - 5, window_y - 5, window_x + 5, window_y + 5), fill="black")
+                    canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+                    canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+                elif(window_x < 500 and window_y > 500):
+                    rect = canvas.create_rectangle((window_x - 4, window_y - 4, window_x + 4,window_y + 4), fill="green")
+                    canvas.tag_bind(rect, "<Button-1>", on_left_button_clicked)
+                    canvas.tag_bind(rect, "<Button-3>", on_right_button_clicked)
+                break
+        if point.x == CenterPoint[0] and point.y == CenterPoint[1]:     
+            oval = canvas.create_oval((window_x - 5,window_y - 5, window_x + 5, window_y + 5), fill="black")
+            oval2 = canvas.create_oval((window_x - 7, window_y - 7, window_x + 7, window_y + 7))
+            canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+            canvas.tag_bind(oval2, "<Button-3>", on_right_button_clicked)
+        elif(found == FALSE):
+            if(window_x < 500 and window_y < 500):
+                line2 = canvas.create_line((window_x - 5, window_y - 5 + 1, window_x + 5, window_y + 5), fill="#e3c5c9")
+                line = canvas.create_line((window_x - 5, window_y + 5 - 1, window_x + 5, window_y - 5), fill="#e3c5c9")
+                canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+            elif(window_x > 500 and window_y < 500):
+                line2 = canvas.create_line((window_x - 5, window_y - 5 + 1, window_x + 5, window_y + 5), fill="#b8bfe0")
+                line = canvas.create_line((window_x - 5, window_y + 5 - 1, window_x + 5, window_y - 5), fill="#b8bfe0")
+                canvas.tag_bind(line, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line2, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(line, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(line2, "<Button-3>", on_right_button_clicked)
+            elif(window_x > 500 and window_y > 500):
+                oval = canvas.create_oval((window_x - 5, window_y - 5, window_x + 5, window_y + 5), fill="#b6b8b6")
+                canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+            elif(window_x < 500 and window_y > 500):
+                rect = canvas.create_rectangle((window_x - 4, window_y - 4, window_x + 4,window_y + 4), fill="#cbf2cb")
+                canvas.tag_bind(rect, "<Button-1>", on_left_button_clicked)
+                canvas.tag_bind(rect, "<Button-3>", on_right_button_clicked)
+            
 
-    # center.changeCenter(newCenterX, newCenterY)
-    print("new", newCenterX, newCenterY)
-    print("after change", center.x, center.y)
+def euclidean_distance(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    return distance
+
+def findClosestItem(clickedX, clickedY):
+    timesValueX = (450) / maxT[0]
+    timesValueY = (450) / maxT[1]
+    clickedX = (clickedX - 500) / timesValueX
+    clickedY = -((clickedY - 500) / timesValueY)
+    closestDist = 1000
+    pointCoords = (0,0)
+    for point in data:
+        dist = euclidean_distance((clickedX,clickedY), (point.x, point.y))
+        if(dist < closestDist):
+            closestDist = dist
+            pointCoords = (point.x, point.y)
+    return(pointCoords)
+def findClosestFive(clickedPoint):
+    fiveClosest = [(996,996), (997,997), (998,998), (999,999), (1000,1000)]
+    k = 0
+    for point in data: 
+        
+        dist = euclidean_distance((clickedPoint[0],clickedPoint[1]), (point.x,point.y))
+        
+        currestIndex = 0
+        lastIndex = 4
+        for close in fiveClosest:
+            k = k+1
+            if(dist < euclidean_distance((clickedPoint[0],clickedPoint[1]), close) and clickedPoint[0] != point.x and clickedPoint[1] != point.y):
+                print("point: ", point.x, point.y)
+                for i in range(5-currestIndex):
+                    if(fiveClosest[lastIndex-i] == fiveClosest[currestIndex]):
+                        print("JAG BREAKAR LOOPEN")
+                        break
+                    print("lastindex i = ", lastIndex-i)
+                    fiveClosest[lastIndex-i] = fiveClosest[lastIndex-i-1] # Kommer returna hela arrayen som ett värde
+                    
+                fiveClosest[currestIndex] = (point.x,point.y)
+                break
+            currestIndex = currestIndex+1
+    print(k)
+    return fiveClosest
+
+
 
 
 def clearCanvas():
@@ -246,14 +368,34 @@ def clearCanvas():
 
 def on_left_button_clicked(event):
     item = canvas.find_closest(event.x, event.y)
+    closestItem  = findClosestItem(event.x, event.y)
+
+    #print(event)
     if item:
         clearCanvas()
-        scatterplot2(data, event.x, event.y)
+        print(event.x, " ", event.y)
+        scatterplot2(data, closestItem[0], closestItem[1], closestItem)
+
+def on_right_button_clicked(event):
+    item = canvas.find_closest(event.x, event.y)
+    closestItem  = findClosestItem(event.x, event.y)
+    global clickedPoint
+    if item:
+        clearCanvas()
+        if(clickedPoint[0] == closestItem[0] and clickedPoint[1] == closestItem[1]):
+            scatterplot(data)
+        else:
+            five = findClosestFive(closestItem)
+            scatterplot3(data, five, closestItem)
+            clickedPoint = closestItem
+
+
+
 
 
 # print(maxT[0])
 # print(maxT[1])
-center = Center(500, 500)
+
 
 
 drawGraph(maxT)
@@ -263,11 +405,3 @@ scatterplot(data)
 root.mainloop()
 
 # print(data[1].id)
-
-
-""" root = Tk()
-frm = ttk.Frame(root, padding=10)
-frm.grid()
-ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-root.mainloop() """
