@@ -26,9 +26,9 @@ def load_csv(file):
     return data
 
 
-data = load_csv("data2.csv")
-data1 = False
-data2 = True
+data = load_csv("data1.csv")
+data1 = TRUE
+data2 = FALSE
 
 root = Tk()
 root.geometry("1000x1000")
@@ -212,9 +212,9 @@ def scatterplot2(data, newCenterX, newCenterY, closestItemPoint):
 
             if(closestItemPoint[0] == point.x and closestItemPoint[1] == point.y):
                 oval = canvas.create_oval((newWindow_x - 5,newWindow_y - 5, newWindow_x + 5, newWindow_y + 5), fill="black")
-                oval = canvas.create_oval((newWindow_x - 7, newWindow_y - 7, newWindow_x + 7, newWindow_y + 7))
+                oval2 = canvas.create_oval((newWindow_x - 7, newWindow_y - 7, newWindow_x + 7, newWindow_y + 7))
                 canvas.tag_bind(oval, "<Button-1>", on_left_button_clicked)
-                canvas.tag_bind(oval, "<Button-3>", on_right_button_clicked)
+                canvas.tag_bind(oval2, "<Button-3>", on_right_button_clicked)
             elif(window_y < newCenterY and window_x < newCenterX):
                 line2 = canvas.create_line((newWindow_x - 5, newWindow_y - 5 + 1, newWindow_x + 5, newWindow_y + 5), fill="red")
                 line = canvas.create_line((newWindow_x - 5, newWindow_y + 5 - 1, newWindow_x + 5, newWindow_y - 5), fill="red")
