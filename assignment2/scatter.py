@@ -26,9 +26,9 @@ def load_csv(file):
     return data
 
 
-data = load_csv("data1.csv")
-data1 = TRUE
-data2 = FALSE
+data = load_csv("data2.csv")
+data1 = FALSE
+data2 = TRUE
 
 root = Tk()
 root.geometry("1000x1000")
