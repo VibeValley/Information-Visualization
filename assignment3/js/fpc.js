@@ -46,18 +46,31 @@ function focusPlusContext(data) {
     /**
      * Task 1 - Parse date with timeParse to year-month-day
      */
+    let parseDate = d3.timeParse("%Y-%m-%d");
 
     /**
      * Task 2 - Define scales and axes for scatterplot
      */
 
+    var xScale = d3.scaleTime().range([0, width]);
+    var yScale = d3.scaleLinear().range([0, height]);
+    var xAxis = d3.axisBottom(xScale);
+    var yAxis = d3.axisLeft(yScale);
+
+
     /**
      * Task 3 - Define scales and axes for context (Navigation through the data)
      */
 
+    var navXScale = d3.scaleTime().range([0, width]);
+    var navYScale = d3.scaleLinear().range([height2, 0]);
+    var navXAxis = d3.axisBottom(navXScale);
+
     /**
      * Task 4 - Define the brush for the context graph (Navigation)
      */
+
+    var brush = d3.brushX().extent([[0,0],[width, height2]]).on("brush end",brushed);
 
 
     //Setting scale parameters
@@ -72,6 +85,10 @@ function focusPlusContext(data) {
     /**
      * Task 5 - Set the axes scales, both for focus and context.
      */
+    xScale.domain([minDate, maxDate]);
+    yScale.domain([minMag, maxMag]);
+    navXScale.domain([minDate, maxDate]);
+    navYScale.domain([minMag, maxMag]);
 
 
     //<---------------------------------------------------------------------------------------------------->
@@ -90,13 +107,16 @@ function focusPlusContext(data) {
     context.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height2 + ")")
-        //here..
+        .call(navXAxis);
 
     /**
-     * Task 7 - Plot the small dots on the context graph.
+     * Task 7 - Plot the small dots on the context graph.   
      */
     small_points = dots.selectAll("dot")
-        //here...
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class","dotContext")
         .filter(function (d) { return d.properties.EQ_PRIMARY != null })
         .attr("cx", function (d) {
             return navXScale(parseDate(d.properties.Date));
@@ -109,6 +129,7 @@ function focusPlusContext(data) {
       * Task 8 - Call plot function.
       * plot(points,nr,nr) try to use different numbers for the scaling.
       */
+     points.plot(small_points,1,2);
 
 
     //<---------------------------------------------------------------------------------------------------->
@@ -125,8 +146,12 @@ function focusPlusContext(data) {
      * Task 10 - Call x and y axis
      */
     focus.append("g")
-    //here..
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0, " + height + ")")
+    .call(xAxis);
     focus.append("g")
+    .attr("class", "axis axis--y")
+    .call(yAxis);
     //here..
 
     //Add y axis label to the scatter plot
@@ -147,7 +172,10 @@ function focusPlusContext(data) {
      * Task 11 - Plot the dots on the focus graph.
      */
     selected_dots = dots.selectAll("dot")
-        //here..
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
         .filter(function (d) { return d.properties.EQ_PRIMARY != null })
         .attr("cx", function (d) {
             return xScale(parseDate(d.properties.Date));
@@ -160,6 +188,8 @@ function focusPlusContext(data) {
      * Task 12 - Call plot function
      * plot(points,nr,nr) no need to send any integers!
      */
+
+    points.plot(selected_dots,1,2);
 
     //<---------------------------------------------------------------------------------------------------->
 
@@ -176,6 +206,7 @@ function focusPlusContext(data) {
             /**
              * Task 13 - Update information in the "tooltip" by calling the tooltip function.
              */
+            points.tooltip(d);
 
 
             //Rescale the dots onhover
@@ -233,7 +264,7 @@ function focusPlusContext(data) {
      * implmented if we put the brush before.
      */
 
-    //here..
+    context.append("g").attr("class", "brush").call(brush).call(brush.move, xScale.range());
 
     //<---------------------------------------------------------------------------------------------------->
 
@@ -265,7 +296,7 @@ function focusPlusContext(data) {
             /**
              * Remove comment for updating dots on the map.
              */
-            //curr_points_view = world_map.change_map_points(curr_view_erth)
+            curr_points_view = world_map.change_map_points(curr_view_erth)
         }
     }
 
