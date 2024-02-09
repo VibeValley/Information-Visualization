@@ -23,11 +23,21 @@ function worldMap(data) {
      * Also append a g tag on this svg tag and add class leaflet-zoom-hide.
      * This g tag will be needed later.
      */
+    
+    var svg_map = d3.select(leaflet_map.getPanes().overlayPane).append("svg");
+
+    var g = svg_map.append("g")
+    .attr("class", "leaflet-zoom-hide");
+
 
     /**
      * Task 17 - Create a function that projects lat/lng points on the map.
      * Use latLngToLayerPoint, remember which goes where.
      */
+    function projectPointsOnMap(x,y){
+        var point = leaflet_map.latLngToLayerPoint(new L.LatLng(y,x));
+        this.stream.point(point.x,point.y);
+    }
 
     /**
      * Task 18 - Now we need to transform all to the specific projection
@@ -35,6 +45,10 @@ function worldMap(data) {
      * {point:function.}
      * Create another variable names d3geoPath to project this transformation to it.
      */
+
+    var transform = d3.geoTransform({point: projectPointsOnMap});
+    var d3path = d3.geoPath().projection(transform);
+
     //Transforming to the specific projection
 
     // similar to projectPoint this function converts lat/long to
@@ -55,22 +69,33 @@ function worldMap(data) {
      * select all circle from g tag and use data.features.
      * Also add a class called mapcircle and set opacity to 0.4
      */
+
+    var feature = g.selectAll("circle")
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class","mapcircle")
+        .style("opacity", 0.4);
+
     //features for the points
 
     /**
      * Task 20 - Call the plot function with feature variable
      * not integers needed.
      */
+    points.plot(feature);
+
+
 
     //Redraw the dots each time we interact with the map
     //Remove comment tags when done with task 20
-    //leaflet_map.on("moveend", reset);
-    //reset();
+    leaflet_map.on("moveend", reset);
+    reset();
 
     //Mouseover
     //Remove comment tags when done with task 20
-    //mouseOver(feature);
-    //mouseOut(feature);
+    mouseOver(feature);
+    mouseOut(feature);
 
     //Mouse over function
     function mouseOver(feature){
