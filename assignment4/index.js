@@ -39,16 +39,20 @@ rightSelect.addEventListener("change", function () {
 });
 
 function linkHighlightHover(node) {
+
+
   var leftSVG = d3
     .select(".nodes")
     .selectAll("circle")
     .filter((d) => {
       //console.log(d, node);
-      return d === node;
+      return d.name === node.name;
     })
     .transition()
     .duration(150)
-    .attr("r", node.value / 6 + 10)
+    .attr("r", (d) =>{
+      return d.value / 6 + 10;
+    })
     .style("stroke", "#000000")
     .style("stroke-width", "4px");
   //console.log(d3.selectAll("g.nodes2"));
@@ -58,13 +62,46 @@ function linkHighlightHover(node) {
     .selectAll("circle")
     .filter((d) => {
       //console.log(d, node);
-      return d === node;
+      return d.name === node.name;
     })
     .transition()
     .duration(150)
-    .attr("r", node.value / 6 + 10)
+    .attr("r", function(d) {
+      return d.value / 6 + 10;
+    })
     .style("stroke", "#000000")
     .style("stroke-width", "4px");
+}
+
+function linkHighlightOut(node){
+
+  var leftSVG = d3
+    .select(".nodes")
+    .selectAll("circle")
+    .filter((d) => {
+      //console.log(d, node);
+      return d.name === node.name;
+    })
+    .transition()
+    .duration(150)
+    .attr("r", function(d) {
+      return d.value / 6 + 5;
+    })
+    .style("stroke", "");
+
+  var rightSVG = d3
+    .select(".nodes2")
+    .selectAll("circle")
+    .filter((d) => {
+      //console.log(d, node);
+      return d.name === node.name;
+    })
+    .transition()
+    .duration(150)
+    .attr("r", function(d) {
+      return d.value / 6 + 5;
+    })
+    .style("stroke", "");;
 }
 
 var width = 600;
@@ -182,6 +219,8 @@ function runLeftSimulation() {
           .transition()
           .duration(150)
           .attr("r", d.value / 6 + 5);
+
+        linkHighlightOut(d);
         return leftTooltipName.text("") && leftTooltipInteraction.text("");
       });
   }
@@ -293,7 +332,8 @@ function runRightSimulation() {
           .duration(150)
           .attr("r", d.value / 6 + 10)
           .style("stroke", "#000000")
-          .style("stroke-width", "4px");
+          .style("stroke-width", "5px");
+        linkHighlightHover(d);
         return (
           rightTooltipName.text(d.name) && rightTooltipInteraction.text(d.value)
         );
@@ -304,6 +344,7 @@ function runRightSimulation() {
           .duration(150)
           .attr("r", d.value / 6 + 5)
           .style("stroke", "");
+        linkHighlightOut(d);
         return rightTooltipName.text("") && rightTooltipInteraction.text("");
       });
   }
