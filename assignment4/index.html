@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <!--<script defer src="./functions.js"></script>-->
-        <script defer src="./index.js"></script>
+    <script type="module" defer src="./index.js"></script>
 
     <title>Star Wars Social Network Graph</title>
 </head>
@@ -16,6 +16,55 @@
 <body>
     <div class="bigContainer">
         <h1>Star Wars Social Network</h1>
+    </div>
+
+    <div class="clusterContainer">
+        <div class="leftContainer">
+            <label for="EpisodeChooserLeft">Choose which episode:</label>
+            <select name="EpisodeChooserLeft" id="EpisodeChooserLeft">
+                <option value="0">All Interactions</option>
+                <option value="1">Episode 1</option>
+                <option value="2">Episode 2</option>
+                <option value="3">Episode 3</option>
+                <option value="4">Episode 4</option>
+                <option value="5">Episode 5</option>
+                <option value="6">Episode 6</option>
+                <option value="7">Episode 7</option>
+            </select>
+            <div class="smallContainerLeft">
+                <div class="boomLeft">
+                    <p>Name: <span class="leftName"></span></p>
+                    <p>Interactions: <span class="leftInteractions"></span></p>
+                </div>
+                <svg class="svg" width="600" height="600">
+                    <g class="links"></g>
+                    <g class="nodes"></g>
+                </svg>
+            </div>
+        </div>
+        <div class="rightContainer">
+            <label for="EpisodeChooserRight">Choose which episode:</label>
+            <select name="EpisodeChooserRight" id="EpisodeChooserRight">
+                <option value="0">All Interactions</option>
+                <option value="1">Episode 1</option>
+                <option value="2">Episode 2</option>
+                <option value="3">Episode 3</option>
+                <option value="4">Episode 4</option>
+                <option value="5">Episode 5</option>
+                <option value="6">Episode 6</option>
+                <option value="7">Episode 7</option>
+            </select>
+            <div class="smallContainerRight">
+                <div class="boomRight">
+                    <p>Name: <span class="rightName"></span></p>
+                    <p>Interactions: <span class="rightInteractions"></span></p>
+                </div>
+                <svg class="svg2" width="600" height="600">
+                    <g class="links2"></g>
+                    <g class="nodes2"></g>
+                </svg>
+            </div>
+        </div>
     </div>
 </body>
 
