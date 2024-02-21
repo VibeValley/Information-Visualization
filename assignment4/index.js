@@ -26,6 +26,12 @@ var leftData = changeDataset(0);
 var rightData = changeDataset(0);
 var leftSelect = document.getElementById("EpisodeChooserLeft");
 var rightSelect = document.getElementById("EpisodeChooserRight");
+var leftTooltipName = d3.select(".leftName").text("");
+var leftTooltipInteraction = d3.select(".leftInteractions").text("");
+var rightTooltipName = d3.select(".rightName").text("");
+var rightTooltipInteraction = d3.select(".rightInteractions").text("");
+const rangeSlider = document.getElementById("mySlider");
+var slidingValue = 0;
 
 leftSelect.addEventListener("change", function () {
   var selectedText = leftSelect.options[leftSelect.selectedIndex].value;
@@ -35,12 +41,17 @@ leftSelect.addEventListener("change", function () {
 rightSelect.addEventListener("change", function () {
   var selectedText = rightSelect.options[rightSelect.selectedIndex].value;
   rightData = changeDataset(selectedText);
-  runRightSimulation();
+  runRightSimulation(0);
 });
+rangeSlider.addEventListener("input", updateValues);
+
+function updateValues() {
+  slidingValue = rangeSlider.value;
+  runRightSimulation(slidingValue);
+  console.log(slidingValue);
+}
 
 function linkHighlightHover(node) {
-
-
   var leftSVG = d3
     .select(".nodes")
     .selectAll("circle")
@@ -50,7 +61,9 @@ function linkHighlightHover(node) {
     })
     .transition()
     .duration(150)
-    .attr("r", (d) =>{
+    .attr("r", (d) => {
+      leftTooltipInteraction.text(d.value);
+      leftTooltipName.text(d.name);
       return d.value / 6 + 10;
     })
     .style("stroke", "#000000")
@@ -66,15 +79,17 @@ function linkHighlightHover(node) {
     })
     .transition()
     .duration(150)
-    .attr("r", function(d) {
+    .attr("r", function (d) {
+      //leftTooltipName.text(d.source.name + " with " + d.target.name);
+      rightTooltipInteraction.text(d.value);
+      rightTooltipName.text(d.name);
       return d.value / 6 + 10;
     })
     .style("stroke", "#000000")
     .style("stroke-width", "4px");
 }
 
-function linkHighlightOut(node){
-
+function linkHighlightOut(node) {
   var leftSVG = d3
     .select(".nodes")
     .selectAll("circle")
@@ -84,7 +99,9 @@ function linkHighlightOut(node){
     })
     .transition()
     .duration(150)
-    .attr("r", function(d) {
+    .attr("r", function (d) {
+      leftTooltipInteraction.text("");
+      leftTooltipName.text("");
       return d.value / 6 + 5;
     })
     .style("stroke", "");
@@ -98,10 +115,12 @@ function linkHighlightOut(node){
     })
     .transition()
     .duration(150)
-    .attr("r", function(d) {
+    .attr("r", function (d) {
+      rightTooltipInteraction.text("");
+      rightTooltipName.text("");
       return d.value / 6 + 5;
     })
-    .style("stroke", "");;
+    .style("stroke", "");
 }
 
 var width = 600;
@@ -109,8 +128,6 @@ var height = 600;
 
 function runLeftSimulation() {
   let zoom = d3.zoom().on("zoom", handleZoom);
-  var leftTooltipName = d3.select(".leftName").text("");
-  var leftTooltipInteraction = d3.select(".leftInteractions").text("");
 
   function handleZoom(e) {
     d3.select(".svg")
@@ -233,11 +250,9 @@ function runLeftSimulation() {
   initZoom();
 }
 
-function runRightSimulation() {
+function runRightSimulation(sliderValue) {
   var nodes = rightData.nodes;
   var links = rightData.links;
-  var rightTooltipName = d3.select(".rightName").text("");
-  var rightTooltipInteraction = d3.select(".rightInteractions").text("");
 
   let zoomRight = d3.zoom().on("zoom", handleZoomRight);
 
@@ -274,7 +289,9 @@ function runRightSimulation() {
       .select(".links2")
       .selectAll("line")
       .data(links)
+
       .join("line")
+
       .attr("x1", function (d) {
         return d.source.x;
       })
