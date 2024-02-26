@@ -4,12 +4,11 @@
   align-items: center;
 }
 
-h1,
-label {
+h1 {
   font-family: "Poppins", sans-serif;
   font-weight: 600;
 }
-p {
+p, text,h3,label {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
 }
@@ -17,6 +16,44 @@ p {
 line {
   stroke: #ccc;
   stroke-width: 2px;
+}
+
+text{
+  font-size: 10px;
+}
+
+.slider{
+  width: 30vh;
+  margin-bottom: 10px;
+}
+
+.interLabel{
+  margin: 0;
+}
+
+.namesDiv{
+  margin-bottom: 15px;
+}
+
+.filterDiv{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  width: 40vh;
+  margin-bottom: 5px;
+}
+
+h3{
+  margin-top: 5px;
+}
+
+.hugeContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .smallContainerRight {

@@ -31,6 +31,7 @@ var leftTooltipInteraction = d3.select(".leftInteractions").text("");
 var rightTooltipName = d3.select(".rightName").text("");
 var rightTooltipInteraction = d3.select(".rightInteractions").text("");
 const rangeSlider = document.getElementById("mySlider");
+const checkBox = document.getElementById("checkboxInput");
 let slidingValue = 30;
 
 leftSelect.addEventListener("change", function () {
@@ -46,8 +47,36 @@ rightSelect.addEventListener("change", function () {
 rangeSlider.addEventListener("input", () => {
   //console.log(rangeSlider.value);
   slidingValue = rangeSlider.value;
+  updateBothDiagrams(slidingValue);
+
   //runRightSimulation(rangeSlider.value);
 });
+
+checkBox.addEventListener("input", () => {
+  console.log(checkBox.checked);
+});
+
+
+
+function getSlider() {
+  //console.log(rangeSlider.value);
+  return rangeSlider.value;
+}
+
+function updateBothDiagrams(slider){
+  d3.selectAll("circle").style("display", (d) => {
+    if(slider > d.value){
+      return "none";
+    }
+  });
+
+  d3.selectAll("line").style("display", (d) =>{
+    if(slider > d.source.value || slider > d.target.value){ 
+      return "none";
+    }
+  });
+}
+
 
 function linkHighlightHover(node) {
   var leftSVG = d3
@@ -198,6 +227,33 @@ function runLeftSimulation() {
   }
 
   function updateNodes() {
+
+    if(checkBox.checked){
+      d3
+      .selectAll("text")
+      .style("display", "flex");
+    }
+    else{
+      d3
+        .selectAll("text")
+        .style("display", "none");
+    }
+    
+    d3
+    .select(".nodes")
+    .selectAll("text")
+    .data(nodes)
+    .join("text")
+    .text(function(d){
+      return d.name;
+    })
+    .attr("x", function(d){
+      return d.x-15;
+    })
+    .attr("y", function(d){
+      return d.y-(d.value/6+5);
+    });
+
     var u = d3
       .select(".nodes")
       .selectAll("circle")
@@ -238,6 +294,8 @@ function runLeftSimulation() {
         linkHighlightOut(d);
         return leftTooltipName.text("") && leftTooltipInteraction.text("");
       });
+      
+
   }
 
   function ticked() {
@@ -278,8 +336,11 @@ function runRightSimulation(_sliderValue) {
     .on("tick", tickedRight);
 
   function tickedRight() {
-    updateNodesRight();
+    let slider = getSlider();
+    //  console.log(slider);
+    updateNodesRight(slider);
     updateLinksRight();
+    
   }
 
   function updateLinksRight() {
@@ -322,16 +383,32 @@ function runRightSimulation(_sliderValue) {
       });
   }
 
-  function updateNodesRight() {
+  function updateNodesRight(value) {
+    let basket = parseInt(value);
+
+    d3
+    .select(".nodes2")
+    .selectAll("text")
+    .data(nodes)
+    .join("text")
+    .text(function(d){
+      return d.name;
+    })
+    .attr("x", function(d){
+      return d.x-15;
+    })
+    .attr("y", function(d){
+      return d.y-(d.value/6+5);
+    });
     var u = d3
       .select(".nodes2")
       .selectAll("circle")
       .data(nodes)
       .join("circle")
-      .filter((d) => {
-        console.log(sliderValue);
-        return d.value > sliderValue;
-      })
+      /* .filter((d) => {
+        //console.log(basket);
+        return d.value > basket;
+      }) */
       .attr("r", function (d) {
         return d.value / 6 + 5;
       })
@@ -370,4 +447,4 @@ function runRightSimulation(_sliderValue) {
 }
 
 runLeftSimulation();
-//runRightSimulation(slidingValue);
+runRightSimulation(slidingValue);
