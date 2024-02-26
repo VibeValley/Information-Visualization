@@ -31,7 +31,7 @@ var leftTooltipInteraction = d3.select(".leftInteractions").text("");
 var rightTooltipName = d3.select(".rightName").text("");
 var rightTooltipInteraction = d3.select(".rightInteractions").text("");
 const rangeSlider = document.getElementById("mySlider");
-var slidingValue = 0;
+let slidingValue = 30;
 
 leftSelect.addEventListener("change", function () {
   var selectedText = leftSelect.options[leftSelect.selectedIndex].value;
@@ -41,15 +41,13 @@ leftSelect.addEventListener("change", function () {
 rightSelect.addEventListener("change", function () {
   var selectedText = rightSelect.options[rightSelect.selectedIndex].value;
   rightData = changeDataset(selectedText);
-  runRightSimulation(0);
-});
-rangeSlider.addEventListener("input", updateValues);
-
-function updateValues() {
-  slidingValue = rangeSlider.value;
   runRightSimulation(slidingValue);
-  console.log(slidingValue);
-}
+});
+rangeSlider.addEventListener("input", () => {
+  //console.log(rangeSlider.value);
+  slidingValue = rangeSlider.value;
+  //runRightSimulation(rangeSlider.value);
+});
 
 function linkHighlightHover(node) {
   var leftSVG = d3
@@ -250,12 +248,12 @@ function runLeftSimulation() {
   initZoom();
 }
 
-function runRightSimulation(sliderValue) {
+function runRightSimulation(_sliderValue) {
   var nodes = rightData.nodes;
   var links = rightData.links;
-
+  let sliderValue = _sliderValue;
   let zoomRight = d3.zoom().on("zoom", handleZoomRight);
-
+  console.log(sliderValue);
   function handleZoomRight(e) {
     d3.select(".svg2")
       .selectAll("g.links2, g.nodes2")
@@ -280,8 +278,8 @@ function runRightSimulation(sliderValue) {
     .on("tick", tickedRight);
 
   function tickedRight() {
-    updateLinksRight();
     updateNodesRight();
+    updateLinksRight();
   }
 
   function updateLinksRight() {
@@ -289,7 +287,6 @@ function runRightSimulation(sliderValue) {
       .select(".links2")
       .selectAll("line")
       .data(links)
-
       .join("line")
 
       .attr("x1", function (d) {
@@ -331,6 +328,10 @@ function runRightSimulation(sliderValue) {
       .selectAll("circle")
       .data(nodes)
       .join("circle")
+      .filter((d) => {
+        console.log(sliderValue);
+        return d.value > sliderValue;
+      })
       .attr("r", function (d) {
         return d.value / 6 + 5;
       })
@@ -369,4 +370,4 @@ function runRightSimulation(sliderValue) {
 }
 
 runLeftSimulation();
-runRightSimulation();
+//runRightSimulation(slidingValue);
