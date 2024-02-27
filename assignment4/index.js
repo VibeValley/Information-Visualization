@@ -33,6 +33,7 @@ var rightTooltipInteraction = d3.select(".rightInteractions").text("");
 const rangeSlider = document.getElementById("mySlider");
 const checkBox = document.getElementById("checkboxInput");
 let slidingValue = 30;
+let isChecked = false;
 
 leftSelect.addEventListener("change", function () {
   var selectedText = leftSelect.options[leftSelect.selectedIndex].value;
@@ -53,20 +54,55 @@ rangeSlider.addEventListener("input", () => {
 });
 
 checkBox.addEventListener("input", () => {
+
   console.log(checkBox.checked);
+  setBool(checkBox.checked);
+  updateNames();
 });
+
+function setBool(checkBoxChecked){
+  isChecked = checkBoxChecked;
+}
+function getBool(){
+  return isChecked;
+}
 
 function getSlider() {
   //console.log(rangeSlider.value);
   return rangeSlider.value;
 }
 
+function updateNames(){
+  let hi = getBool();
+  d3.selectAll("text").style("display", function(d){
+    if(!hi){
+      return "none";
+    }
+    else{
+      return "flex";
+    }
+  });
+
+}
+
 function updateBothDiagrams(slider) {
+  let hi = getBool();
   d3.selectAll("circle").style("display", (d) => {
     if (slider > d.value) {
       return "none";
     }
   });
+
+  d3.selectAll("text").style("display", (d) => {
+    
+    if (slider > d.value){
+      return "none";
+    }
+    else if(!hi){
+      return "none";
+    }
+    
+  })
 
   d3.selectAll("line").style("display", (d) => {
     if (slider > d.source.value || slider > d.target.value) {
@@ -224,11 +260,7 @@ function runLeftSimulation() {
   }
 
   function updateNodes() {
-    if (checkBox.checked) {
-      d3.selectAll("text").style("display", "flex");
-    } else {
-      d3.selectAll("text").style("display", "none");
-    }
+    updateNames();
 
     d3.select(".nodes")
       .selectAll("text")
