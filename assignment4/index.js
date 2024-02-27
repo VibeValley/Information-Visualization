@@ -42,7 +42,7 @@ leftSelect.addEventListener("change", function () {
 rightSelect.addEventListener("change", function () {
   var selectedText = rightSelect.options[rightSelect.selectedIndex].value;
   rightData = changeDataset(selectedText);
-  runRightSimulation(slidingValue);
+  runRightSimulation();
 });
 rangeSlider.addEventListener("input", () => {
   //console.log(rangeSlider.value);
@@ -56,27 +56,24 @@ checkBox.addEventListener("input", () => {
   console.log(checkBox.checked);
 });
 
-
-
 function getSlider() {
   //console.log(rangeSlider.value);
   return rangeSlider.value;
 }
 
-function updateBothDiagrams(slider){
+function updateBothDiagrams(slider) {
   d3.selectAll("circle").style("display", (d) => {
-    if(slider > d.value){
+    if (slider > d.value) {
       return "none";
     }
   });
 
-  d3.selectAll("line").style("display", (d) =>{
-    if(slider > d.source.value || slider > d.target.value){ 
+  d3.selectAll("line").style("display", (d) => {
+    if (slider > d.source.value || slider > d.target.value) {
       return "none";
     }
   });
 }
-
 
 function linkHighlightHover(node) {
   var leftSVG = d3
@@ -227,32 +224,25 @@ function runLeftSimulation() {
   }
 
   function updateNodes() {
+    if (checkBox.checked) {
+      d3.selectAll("text").style("display", "flex");
+    } else {
+      d3.selectAll("text").style("display", "none");
+    }
 
-    if(checkBox.checked){
-      d3
+    d3.select(".nodes")
       .selectAll("text")
-      .style("display", "flex");
-    }
-    else{
-      d3
-        .selectAll("text")
-        .style("display", "none");
-    }
-    
-    d3
-    .select(".nodes")
-    .selectAll("text")
-    .data(nodes)
-    .join("text")
-    .text(function(d){
-      return d.name;
-    })
-    .attr("x", function(d){
-      return d.x-15;
-    })
-    .attr("y", function(d){
-      return d.y-(d.value/6+5);
-    });
+      .data(nodes)
+      .join("text")
+      .text(function (d) {
+        return d.name;
+      })
+      .attr("x", function (d) {
+        return d.x - 15;
+      })
+      .attr("y", function (d) {
+        return d.y - (d.value / 6 + 5);
+      });
 
     var u = d3
       .select(".nodes")
@@ -294,8 +284,6 @@ function runLeftSimulation() {
         linkHighlightOut(d);
         return leftTooltipName.text("") && leftTooltipInteraction.text("");
       });
-      
-
   }
 
   function ticked() {
@@ -306,12 +294,10 @@ function runLeftSimulation() {
   initZoom();
 }
 
-function runRightSimulation(_sliderValue) {
+function runRightSimulation() {
   var nodes = rightData.nodes;
   var links = rightData.links;
-  let sliderValue = _sliderValue;
   let zoomRight = d3.zoom().on("zoom", handleZoomRight);
-  console.log(sliderValue);
   function handleZoomRight(e) {
     d3.select(".svg2")
       .selectAll("g.links2, g.nodes2")
@@ -340,7 +326,6 @@ function runRightSimulation(_sliderValue) {
     //  console.log(slider);
     updateNodesRight(slider);
     updateLinksRight();
-    
   }
 
   function updateLinksRight() {
@@ -386,20 +371,19 @@ function runRightSimulation(_sliderValue) {
   function updateNodesRight(value) {
     let basket = parseInt(value);
 
-    d3
-    .select(".nodes2")
-    .selectAll("text")
-    .data(nodes)
-    .join("text")
-    .text(function(d){
-      return d.name;
-    })
-    .attr("x", function(d){
-      return d.x-15;
-    })
-    .attr("y", function(d){
-      return d.y-(d.value/6+5);
-    });
+    d3.select(".nodes2")
+      .selectAll("text")
+      .data(nodes)
+      .join("text")
+      .text(function (d) {
+        return d.name;
+      })
+      .attr("x", function (d) {
+        return d.x - 15;
+      })
+      .attr("y", function (d) {
+        return d.y - (d.value / 6 + 5);
+      });
     var u = d3
       .select(".nodes2")
       .selectAll("circle")
@@ -447,4 +431,4 @@ function runRightSimulation(_sliderValue) {
 }
 
 runLeftSimulation();
-runRightSimulation(slidingValue);
+runRightSimulation();

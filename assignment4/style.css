@@ -1,16 +1,26 @@
+:root {
+  --shadow-color: 0deg 0% 54%;
+}
 .bigContainer {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
+html {
+  background-color: #f5f5f5;
+}
 h1 {
   font-family: "Poppins", sans-serif;
-  font-weight: 600;
+  font-weight: 800;
 }
-p, text,h3,label {
+
+p,
+text,
+h3,
+label {
   font-family: "Poppins", sans-serif;
-  font-weight: 400;
+  font-weight: 200;
+  font-style: normal;
 }
 
 line {
@@ -18,38 +28,45 @@ line {
   stroke-width: 2px;
 }
 
-text{
+text {
   font-size: 10px;
 }
 
-.slider{
+.slider {
   width: 30vh;
   margin-bottom: 10px;
 }
 
-.interLabel{
+.interLabel {
   margin: 0;
 }
 
-.namesDiv{
+.namesDiv {
   margin-bottom: 15px;
 }
 
-.filterDiv{
+.filterDiv {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid black;
   width: 40vh;
+  padding-left: 12px;
+  box-shadow: 0.3px 0.6px 0.8px hsl(var(--shadow-color) / 0.29),
+    0.8px 1.7px 2.1px -0.6px hsl(var(--shadow-color) / 0.29),
+    1.6px 3.3px 4.1px -1.2px hsl(var(--shadow-color) / 0.29),
+    3.3px 6.6px 8.3px -1.9px hsl(var(--shadow-color) / 0.29),
+    6.4px 12.8px 16.1px -2.5px hsl(var(--shadow-color) / 0.29);
   margin-bottom: 5px;
+  border-radius: 8px;
+  background-color: white;
 }
 
-h3{
+h3 {
   margin-top: 5px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
 }
 
-.hugeContainer{
+.hugeContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -60,29 +77,27 @@ h3{
   border: 3px solid black;
   padding: 0;
   margin-top: 6px;
+  background-color: white;
 }
 
 .smallContainerLeft {
   border: 3px solid black;
+  background-color: white;
   padding: 0;
   margin-top: 6px;
 }
 
 .boomRight {
   position: absolute;
-  border: 2px solid black;
-  background-color: white;
   width: 200px;
   height: 100px;
-  border-radius: 10px;
   margin: 5px;
   padding-left: 4px;
 }
 
 .boomLeft {
   position: absolute;
-  border: 2px solid black;
-  background-color: white;
+
   width: 200px;
   height: 100px;
   border-radius: 10px;
